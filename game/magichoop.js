@@ -105,16 +105,39 @@ function starBackground() {
       flash.potitionX = flash.potitionX + Math.random() * 0.1;
     }
   }
+  function basket() {
+    translate(-40, -90);
+    noFill();
+    strokeWeight(3);
+    // backboard
+    stroke(255, 255, 255);
+    rect(600 / 2, 400, 300, 200);
+    rect(370, 460, 150, 100);
+    // rim
+    push();
+    strokeWeight(10);
+    line(390, 560, 500, 560);
+    pop();
+    // net
+    line(390, 560, 400, 660);
+    line(500, 560, 490, 660);
+    line(420, 580, 493, 630);
+    line(470, 580, 398, 630);
+    line(395, 600, 490, 660);
+    line(495, 600, 400, 660);
+    line(398, 630, 440, 660);
+    line(440, 660, 490, 630);
+    line(420, 580, 395, 600);
+    line(470, 580, 495, 600);
+    line(415, 560, 420, 580);
+    line(475, 560, 470, 580);
+  }
+  basket();
 }
 
-// https://pixelkind.github.io/foundationsofprogramming/programming/12-03-example
-// animating ball to move with keys
-
-// https://p5js.org/examples/motion-non-orthogonal-reflection.html
-
 function firstBallPosition() {
-  line(240, 200, 160, 200);
-
+  // horisontal line
+  line(160, 205, 240, 205);
   // right line
   beginShape();
   vertex(175, 170);
@@ -185,7 +208,7 @@ function fourthBallPosition() {
 
 let state = 0;
 
-// animation
+// the animation of the ball
 function ballRotationAnimation(ballPositionX, ballPositionY) {
   starBackground();
   translate(ballPositionX, ballPositionY);
@@ -193,6 +216,7 @@ function ballRotationAnimation(ballPositionX, ballPositionY) {
   strokeWeight(3);
   noFill();
 
+  // the ball outline
   push();
   fill(0, 0, 0);
   ellipse(200, 200, 80);
@@ -246,6 +270,47 @@ function ballRotationAnimation(ballPositionX, ballPositionY) {
     }
   }
 }
+// https://p5js.org/examples/motion-non-orthogonal-reflection.html
+// making the ball move with the keys https://pixelkind.github.io/foundationsofprogramming/programming/12-03-example
+// game mecanics
+let x = Math.floor(Math.random() * 700);
+let y = -250;
+let verticalSpeed = 0;
+let horisontalSpeed = 0;
+
+function gameMecanics() {
+  background(0, 0, 0);
+  ballRotationAnimation(x, y);
+
+  // setting gravity and jumping
+  y = y + verticalSpeed;
+  if (keyIsDown(38)) {
+    verticalSpeed = -2;
+  } else {
+    setInterval(function gravity() {
+      verticalSpeed = verticalSpeed + 0.0001;
+    });
+  }
+
+  // moving left and right
+  x = x + horisontalSpeed;
+  if (keyIsDown(37)) {
+    horisontalSpeed = -0.3;
+  } else if (keyIsDown(39)) {
+    horisontalSpeed = 0.3;
+  } else {
+    x = x + horisontalSpeed;
+  }
+}
+
+// two minute timer for the game
+// Call a function after the specified amount of time has elapsed
+// setTimeout(function () {
+//   screenState = "end";
+//   console.log("Timer has elapsed!");
+// }, 120000);
+
+function scoreScreen() {}
 
 // source for setting up the three states of the game https://www.youtube.com/watch?v=3DcmPs4v2iA&t=537s
 let screenState = "start";
@@ -266,16 +331,9 @@ function startTheGame() {
     screenState = "start";
     startScreen();
   } else if (screenState === "game") {
-    ballRotationAnimation(0, 100);
+    gameMecanics();
   }
 }
-
-// two minute timer for the game
-// Call a function after the specified amount of time has elapsed
-// setTimeout(function () {
-//   screenState = "end";
-//   console.log("Timer has elapsed!");
-// }, 120000);
 
 // draw function
 function draw() {
