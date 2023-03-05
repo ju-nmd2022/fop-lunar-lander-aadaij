@@ -1,4 +1,4 @@
-// MagicHoop basketball game
+// Magic Hoop basketball game
 
 // setting up the canvas
 function setup() {
@@ -9,38 +9,89 @@ function setup() {
   background(0, 0, 0);
 }
 
+// values used through the game
+let screenState = "start";
+let score = 0;
+
+// starting button
+function startButton() {
+  push();
+  stroke(0, 0, 0);
+  strokeWeight(3);
+  fill(127, 176, 103);
+  rect(800 / 2 - 150, 600 / 2 - 30, 300, 60);
+  pop();
+  noStroke();
+  fill(0, 0, 0);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  textFont("'Courier Prime', monospace");
+  text("Press space to play", 800 / 2, 600 / 2);
+}
+
+// starting sreen
 function startScreen() {
   background(255, 255, 255);
   function titleText() {
     textFont("'Courier Prime', monospace");
+    // heading
     push();
-    textSize(40);
-    text("Hoop Magic", 800 / 2, 80);
+    textSize(25);
+    text("Magic Hoop", 800 / 2, 80);
     pop();
+    // instructions
     push();
     textAlign(LEFT);
+    textSize(16);
     text(
       "In this alternative universe \nfree throws are a little different. \nYour goal is to mind control the ball \n(with the arrow keys) into the hoop as many \ntimes as possible before your time runs out.",
-      150,
+      200,
       180
     );
     pop();
   }
-  function startButton() {
-    push();
-    stroke(2);
-    fill(255, 0, 0);
-    rect(800 / 2 - 150, 600 / 2 - 30, 300, 60);
-    pop();
-    noStroke();
-    fill(0, 0, 0);
-    textSize(20);
-    textAlign(CENTER, CENTER);
-    textFont("'Courier Prime', monospace");
-    text("Press space to play", 800 / 2, 600 / 2);
-  }
   startButton();
   titleText();
+}
+
+// drawing the basket
+function backBoard() {
+  push();
+  translate(-40, -90);
+  noFill();
+  strokeWeight(3);
+  // backboard
+  stroke(255, 255, 255);
+  rect(600 / 2, 400, 300, 200);
+  rect(370, 460, 150, 100);
+  pop();
+}
+
+function rimAndNet() {
+  push();
+  translate(-40, -90);
+  noFill();
+  stroke(255, 255, 255);
+  // rim
+  push();
+  strokeWeight(10);
+  line(390, 560, 500, 560);
+  pop();
+  // net
+  strokeWeight(3);
+  line(390, 560, 400, 660);
+  line(500, 560, 490, 660);
+  line(420, 580, 493, 630);
+  line(470, 580, 398, 630);
+  line(395, 600, 490, 660);
+  line(495, 600, 400, 660);
+  line(398, 630, 440, 660);
+  line(440, 660, 490, 630);
+  line(420, 580, 395, 600);
+  line(470, 580, 495, 600);
+  line(415, 560, 420, 580);
+  line(475, 560, 470, 580);
+  pop();
 }
 
 // flashing star background
@@ -105,34 +156,7 @@ function starBackground() {
       flash.potitionX = flash.potitionX + Math.random() * 0.1;
     }
   }
-  function basket() {
-    translate(-40, -90);
-    noFill();
-    strokeWeight(3);
-    // backboard
-    stroke(255, 255, 255);
-    rect(600 / 2, 400, 300, 200);
-    rect(370, 460, 150, 100);
-    // rim
-    push();
-    strokeWeight(10);
-    line(390, 560, 500, 560);
-    pop();
-    // net
-    line(390, 560, 400, 660);
-    line(500, 560, 490, 660);
-    line(420, 580, 493, 630);
-    line(470, 580, 398, 630);
-    line(395, 600, 490, 660);
-    line(495, 600, 400, 660);
-    line(398, 630, 440, 660);
-    line(440, 660, 490, 630);
-    line(420, 580, 395, 600);
-    line(470, 580, 495, 600);
-    line(415, 560, 420, 580);
-    line(475, 560, 470, 580);
-  }
-  basket();
+  backBoard();
 }
 
 function firstBallPosition() {
@@ -206,11 +230,11 @@ function fourthBallPosition() {
   endShape();
 }
 
-let state = 0;
-
 // the animation of the ball
+let state = 0;
 function ballRotationAnimation(ballPositionX, ballPositionY) {
   starBackground();
+  push();
   translate(ballPositionX, ballPositionY);
   stroke(255, 255, 255);
   strokeWeight(3);
@@ -226,55 +250,64 @@ function ballRotationAnimation(ballPositionX, ballPositionY) {
 
   let frameSpeed = 10;
 
-  // First drawing
   if (state === 0) {
-    // Draw the first drawing
+    // first drawing
     firstBallPosition();
 
-    // Transition to the next state after 60 frames
+    // display the next frame of the animation
     if (frameCount % frameSpeed === 0) {
       state = 1;
     }
   }
 
-  // Second drawing
+  // second drawing
   else if (state === 1) {
     // Draw the second drawing
     secondBallPosition();
 
-    // Transition to the next state after 60 frames
+    // display the next frame of the animation
     if (frameCount % frameSpeed === 0) {
       state = 2;
     }
   }
 
-  // Third drawing
+  // third drawing
   else if (state === 2) {
     // Draw the third drawing
     thirdBallPosition();
 
-    // Transition back to the first state after 60 frames
+    // display the next frame of the animation
     if (frameCount % frameSpeed === 0) {
       state = 3;
     }
   }
 
-  // Fourth drawing
+  // fourth drawing
   else if (state === 3) {
     // Draw the third drawing
     fourthBallPosition();
 
-    // Transition back to the first state after 60 frames
+    // display the first frame of the animation again
     if (frameCount % frameSpeed === 0) {
       state = 0;
     }
   }
+  pop();
+
+  // drawing the rim and net infront of the ball
+  rimAndNet();
 }
+
 // https://p5js.org/examples/motion-non-orthogonal-reflection.html
 // making the ball move with the keys https://pixelkind.github.io/foundationsofprogramming/programming/12-03-example
+// gravity tutorial https://www.youtube.com/watch?v=b5AryiZ6Z-s
+
 // game mecanics
+// the ball starts falling from a random width
 let x = Math.floor(Math.random() * 700);
+// the ball starts falling from out of site
 let y = -250;
+// setting the speed the ball is dropping and moving side to side
 let verticalSpeed = 0;
 let horisontalSpeed = 0;
 
@@ -285,7 +318,7 @@ function gameMecanics() {
   // setting gravity and jumping
   y = y + verticalSpeed;
   if (keyIsDown(38)) {
-    verticalSpeed = -2;
+    verticalSpeed = -4;
   } else {
     setInterval(function gravity() {
       verticalSpeed = verticalSpeed + 0.0001;
@@ -304,38 +337,58 @@ function gameMecanics() {
 }
 
 // two minute timer for the game
-// Call a function after the specified amount of time has elapsed
-// setTimeout(function () {
-//   screenState = "end";
-//   console.log("Timer has elapsed!");
-// }, 120000);
+let duration = 120;
 
-function scoreScreen() {}
+function timer() {
+  // how much time is left
+  let minutes = Math.floor(duration / 6000);
+  let seconds = duration % 6000;
+  // only showin two numbers for seconds
+  seconds = seconds / 100;
+  // getting rid of desimals
+  seconds = seconds.toFixed(0);
 
-// source for setting up the three states of the game https://www.youtube.com/watch?v=3DcmPs4v2iA&t=537s
-let screenState = "start";
-function gameState() {
-  if (screenState === "start") {
-    screenState = "game";
-  } else if (screenState === "game") {
+  // visible timer
+  textSize(20);
+  fill(255, 255, 255);
+  text(minutes + ":" + (seconds < 10 ? "0" : "") + seconds, 750, 40);
+
+  // subtracting from the duration
+  duration--;
+
+  // when time runs out show score screen
+  if (duration < 0) {
     screenState = "end";
-  } else if (screenState === "end") {
-    screenState = "game";
   }
 }
 
-function startTheGame() {
+// ending screen to show the score and re-start the game
+function scoreScreen() {
+  background(255, 255, 255);
+  push();
+  fill(0, 0, 0);
+  textAlign(LEFT);
+  // hight score
+  text("HIGH SCORE", 250, 160);
+  text(score, 540, 160);
+  // latest score
+  text("SCORE", 250, 185);
+  text(score, 540, 185);
+  startButton();
+  pop();
+}
+
+// source for setting up the three states of the game https://www.youtube.com/watch?v=3DcmPs4v2iA&t=537s
+// draw function
+function draw() {
   if (keyIsDown(32)) {
     screenState = "game";
   } else if (screenState === "start") {
-    screenState = "start";
     startScreen();
   } else if (screenState === "game") {
     gameMecanics();
+    timer();
+  } else if (screenState === "end") {
+    scoreScreen();
   }
-}
-
-// draw function
-function draw() {
-  startTheGame();
 }
