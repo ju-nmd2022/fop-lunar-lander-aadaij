@@ -25,8 +25,8 @@ function basketRimAndNet() {
   pop();
   // net
   strokeWeight(3);
-  // line(390, 560, 400, 660);
-  // line(500, 560, 490, 660);
+  line(390, 560, 400, 660);
+  line(500, 560, 490, 660);
   line(420, 580, 493, 630);
   line(470, 580, 398, 630);
   line(395, 600, 490, 660);
@@ -38,4 +38,11 @@ function basketRimAndNet() {
   line(415, 560, 420, 580);
   line(475, 560, 470, 580);
   pop();
+}
+
+// the ball has to pass between the x values 390 and 500 of the rim at the y height of 560
+// if the ball hits 390 or 500 it has to (bounce off) or (stop the ball)
+
+function draw() {
+  basketRimAndNet();
 }

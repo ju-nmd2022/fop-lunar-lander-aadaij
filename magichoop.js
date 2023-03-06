@@ -12,10 +12,8 @@ function setup() {
 // values used through the game
 let screenState = "start";
 // duration of the timer
-let duration = 1200;
+let duration = 12000;
 let score = 0;
-let highScore = 0;
-highScore = localStorage.getItem(highScore);
 
 // starting button
 function startButton() {
@@ -202,7 +200,7 @@ function secondBallPosition() {
 
 function thirdBallPosition() {
   // third ball position
-  //   left line
+  // left line
   beginShape();
   vertex(220, 165);
   bezierVertex(220, 165, 235, 200, 220, 235);
@@ -239,7 +237,7 @@ let state = 0;
 function ballRotationAnimation(ballPositionX, ballPositionY) {
   starBackground();
   push();
-  translate(ballPositionX, ballPositionY);
+  translate(ballPositionX - 160, ballPositionY - 160);
   stroke(255, 255, 255);
   strokeWeight(3);
   noFill();
@@ -308,7 +306,7 @@ function ballRotationAnimation(ballPositionX, ballPositionY) {
 
 // game mecanics
 // the ball starts falling from a random width
-let x = Math.floor(Math.random() * 600);
+let x = Math.floor(Math.random() * 800 - 40);
 // the ball starts falling from out of site
 let y = -250;
 // setting the speed the ball is dropping and moving side to side
@@ -324,9 +322,8 @@ function gameMecanics() {
   if (keyIsDown(38)) {
     verticalSpeed = -4;
   } else {
-    var gravityInterval = setInterval(function gravity() {
-      verticalSpeed = verticalSpeed + 0.0001;
-    });
+    // iteration deleted thanks to Evelin
+    verticalSpeed = verticalSpeed + 0.05;
   }
 
   // moving left and right
@@ -339,19 +336,33 @@ function gameMecanics() {
     x = x + horisontalSpeed;
   }
 }
-
+let highScore = 0;
 // how many times has the ball passed the hoop
-function keepingScore() {}
+function keepingScore() {
+  // re-start the dropping of the ball
+  if (y > 800) {
+    x = Math.floor(Math.random() * 600);
+    y = -250;
+    verticalSpeed = 0;
+    horisontalSpeed = 0;
+    screenState = "game";
+  }
+  // the ball has to pass between the x values 390 and 500 of the rim at the y height of 560
+  // if the ball hits 390 or 500 it has to (bounce off) or (stop the ball)
+  // x > 0 && x < 500
+  if (y > 560 && y < 565 && x > 300 && x < 300 + 110) {
+    score += 1;
+  }
+
+  // high score
+  if (score >= highScore) {
+    localStorage.setItem("theHighesScore", score);
+  }
+  highScore = localStorage.getItem("theHighesScore");
+}
 
 // calculating the high score
 // https://www.javatpoint.com/javascript-localstorage
-function scoreCalculation() {
-  if (score > highScore) {
-    localStorage.setItem(highScore, score);
-  } else {
-    highScore = highScore;
-  }
-}
 
 // two minute timer for the game
 function timer() {
@@ -388,7 +399,7 @@ function scoreScreen() {
   textAlign(LEFT);
   // hight score
   text("HIGH SCORE", 250, 160);
-  text(score, 540, 160);
+  text(highScore, 540, 160);
   // latest score
   text("SCORE", 250, 185);
   text(score, 540, 185);
@@ -402,8 +413,9 @@ function draw() {
   // re-starting the game again form the score screen
   if (screenState === "end" && keyIsDown(32)) {
     // setting the values back to original
-    duration = 1200;
-    x = Math.floor(Math.random() * 600);
+    score = 0;
+    duration = 12000;
+    x = Math.floor(Math.random() * 800 - 40);
     y = -250;
     verticalSpeed = 0;
     horisontalSpeed = 0;
@@ -417,9 +429,9 @@ function draw() {
     startScreen();
   } else if (screenState === "game") {
     gameMecanics();
+    keepingScore();
     timer();
   } else if (screenState === "end") {
-    scoreCalculation();
     scoreScreen();
   }
 }
