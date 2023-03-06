@@ -11,8 +11,11 @@ function setup() {
 
 // values used through the game
 let screenState = "start";
+// duration of the timer
+let duration = 1200;
 let score = 0;
-let highScore = localStorage.getItem(highScore);
+let highScore = 0;
+highScore = localStorage.getItem(highScore);
 
 // starting button
 function startButton() {
@@ -305,7 +308,7 @@ function ballRotationAnimation(ballPositionX, ballPositionY) {
 
 // game mecanics
 // the ball starts falling from a random width
-let x = Math.floor(Math.random() * 700);
+let x = Math.floor(Math.random() * 600);
 // the ball starts falling from out of site
 let y = -250;
 // setting the speed the ball is dropping and moving side to side
@@ -321,7 +324,7 @@ function gameMecanics() {
   if (keyIsDown(38)) {
     verticalSpeed = -4;
   } else {
-    setInterval(function gravity() {
+    var gravityInterval = setInterval(function gravity() {
       verticalSpeed = verticalSpeed + 0.0001;
     });
   }
@@ -337,6 +340,9 @@ function gameMecanics() {
   }
 }
 
+// how many times has the ball passed the hoop
+function keepingScore() {}
+
 // calculating the high score
 // https://www.javatpoint.com/javascript-localstorage
 function scoreCalculation() {
@@ -348,8 +354,6 @@ function scoreCalculation() {
 }
 
 // two minute timer for the game
-let duration = 12000;
-
 function timer() {
   // how much time is left
   let minutes = Math.floor(duration / 6000);
@@ -395,6 +399,18 @@ function scoreScreen() {
 // source for setting up the three states of the game https://www.youtube.com/watch?v=3DcmPs4v2iA&t=537s
 // draw function
 function draw() {
+  // re-starting the game again form the score screen
+  if (screenState === "end" && keyIsDown(32)) {
+    // setting the values back to original
+    duration = 1200;
+    x = Math.floor(Math.random() * 600);
+    y = -250;
+    verticalSpeed = 0;
+    horisontalSpeed = 0;
+    // re-starting the game
+    screenState = "game";
+  }
+
   if (keyIsDown(32)) {
     screenState = "game";
   } else if (screenState === "start") {
