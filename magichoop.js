@@ -12,6 +12,7 @@ function setup() {
 // values used through the game
 let screenState = "start";
 let score = 0;
+let highScore = localStorage.getItem(highScore);
 
 // starting button
 function startButton() {
@@ -336,8 +337,18 @@ function gameMecanics() {
   }
 }
 
+// calculating the high score
+// https://www.javatpoint.com/javascript-localstorage
+function scoreCalculation() {
+  if (score > highScore) {
+    localStorage.setItem(highScore, score);
+  } else {
+    highScore = highScore;
+  }
+}
+
 // two minute timer for the game
-let duration = 120;
+let duration = 12000;
 
 function timer() {
   // how much time is left
@@ -360,6 +371,9 @@ function timer() {
   if (duration < 0) {
     screenState = "end";
   }
+
+  // displaying the score
+  text(score, 40, 40);
 }
 
 // ending screen to show the score and re-start the game
@@ -389,6 +403,7 @@ function draw() {
     gameMecanics();
     timer();
   } else if (screenState === "end") {
+    scoreCalculation();
     scoreScreen();
   }
 }
