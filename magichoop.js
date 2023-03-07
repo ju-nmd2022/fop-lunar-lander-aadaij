@@ -12,7 +12,7 @@ function setup() {
 // values used through the game
 let screenState = "start";
 // duration of the timer
-let duration = 12000;
+let duration = 120;
 let score = 0;
 
 // starting button
@@ -320,25 +320,38 @@ function gameMecanics() {
   // setting gravity and jumping
   y = y + verticalSpeed;
   if (keyIsDown(38)) {
-    verticalSpeed = -4;
+    verticalSpeed = -10;
   } else {
     // iteration deleted thanks to Evelin
-    verticalSpeed = verticalSpeed + 0.05;
+    verticalSpeed = verticalSpeed + 0.5;
   }
 
   // moving left and right
   x = x + horisontalSpeed;
   if (keyIsDown(37)) {
-    horisontalSpeed = -0.3;
+    horisontalSpeed = -1.5;
   } else if (keyIsDown(39)) {
-    horisontalSpeed = 0.3;
+    horisontalSpeed = 1.5;
   } else {
     x = x + horisontalSpeed;
   }
-}
-let highScore = 0;
-// how many times has the ball passed the hoop
-function keepingScore() {
+
+  // ractangles to see where the corinates of the rims borders are
+  // rect(345, 465, 10);
+  // rect(455, 465, 10);
+
+  // if the balls x and y position of the ball - or + the balls radius 40px
+  // come closer to these squeres stop the vertical speed, maybe jump?
+  // right rim bounce
+  if (x < 335 && x > 290 && y > 385 && y < 400) {
+    verticalSpeed = -10;
+  }
+
+  // left rim bounce
+  if (x < 465 && x > 400 && y > 385 && y < 400) {
+    verticalSpeed = -10;
+  }
+
   // re-start the dropping of the ball
   if (y > 800) {
     x = Math.floor(Math.random() * 600);
@@ -350,10 +363,13 @@ function keepingScore() {
   // the ball has to pass between the x values 390 and 500 of the rim at the y height of 560
   // if the ball hits 390 or 500 it has to (bounce off) or (stop the ball)
   // x > 0 && x < 500
-  if (y > 560 && y < 565 && x > 300 && x < 300 + 110) {
+  if (y > 405 && y < 420 && x > 290 && x < 465) {
     score += 1;
   }
-
+}
+let highScore = 0;
+// how many times has the ball passed the hoop
+function keepingScore() {
   // high score
   if (score >= highScore) {
     localStorage.setItem("theHighesScore", score);
@@ -367,10 +383,10 @@ function keepingScore() {
 // two minute timer for the game
 function timer() {
   // how much time is left
-  let minutes = Math.floor(duration / 6000);
-  let seconds = duration % 6000;
+  let minutes = Math.floor(duration / 600);
+  let seconds = duration % 600;
   // only showin two numbers for seconds
-  seconds = seconds / 100;
+  seconds = seconds / 10;
   // getting rid of desimals
   seconds = seconds.toFixed(0);
 
@@ -404,6 +420,10 @@ function scoreScreen() {
   text("SCORE", 250, 185);
   text(score, 540, 185);
   startButton();
+  if (score >= highScore) {
+    textSize(20);
+    text("NEW HIGH SCORE!", 340, 135);
+  }
   pop();
 }
 
@@ -414,7 +434,7 @@ function draw() {
   if (screenState === "end" && keyIsDown(32)) {
     // setting the values back to original
     score = 0;
-    duration = 12000;
+    duration = 120;
     x = Math.floor(Math.random() * 800 - 40);
     y = -250;
     verticalSpeed = 0;
@@ -429,9 +449,9 @@ function draw() {
     startScreen();
   } else if (screenState === "game") {
     gameMecanics();
-    keepingScore();
     timer();
   } else if (screenState === "end") {
+    keepingScore();
     scoreScreen();
   }
 }
