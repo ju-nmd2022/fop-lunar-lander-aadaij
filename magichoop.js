@@ -11,6 +11,7 @@ function setup() {
   var y = (windowHeight - height) / 2;
   cnv.position(x, y);
   background(0, 0, 0);
+  frameRate(5);
 }
 
 // values used through the game
@@ -244,7 +245,7 @@ function fourthBallPosition() {
 // the animation of the ball
 let state = 0;
 // spinning speed
-let frameSpeed = 10;
+let frameSpeed = 3;
 function ballRotationAnimation(ballPositionX, ballPositionY) {
   starBackground();
   push();
@@ -329,18 +330,18 @@ function gameMecanics() {
   // setting gravity and jumping
   y = y + verticalSpeed;
   if (keyIsDown(38)) {
-    verticalSpeed = -3;
+    verticalSpeed = -10;
   } else {
     // iteration deleted thanks to Evelin
-    verticalSpeed = verticalSpeed + 0.05;
+    verticalSpeed = verticalSpeed + 0.5;
   }
 
   // moving left and right with the arrow keys
   x = x + horisontalSpeed;
   if (keyIsDown(37)) {
-    horisontalSpeed = -0.4;
+    horisontalSpeed = -1.5;
   } else if (keyIsDown(39)) {
-    horisontalSpeed = 0.4;
+    horisontalSpeed = 1.5;
   } else {
     x = x + horisontalSpeed;
   }
@@ -351,12 +352,12 @@ function gameMecanics() {
 
   // right rim bounce
   if (x < 335 && x > 290 && y > 385 && y < 400) {
-    verticalSpeed = -4;
+    verticalSpeed = -10;
   }
 
   // left rim bounce
   if (x < 465 && x > 400 && y > 385 && y < 400) {
-    verticalSpeed = -4;
+    verticalSpeed = -10;
   }
 
   // re-start the dropping of the ball
@@ -369,16 +370,16 @@ function gameMecanics() {
   }
 
   // adding to the score when ever the ball passes the rim and dropping the ball straight down after that.
-  if (y > 405 && y < 410 && x > 290 && x < 465) {
+  if (y > 405 && y < 420 && x > 290 && x < 465) {
     score += 1;
-    verticalSpeed = 8;
+    verticalSpeed = 25;
     horisontalSpeed = 0;
   }
   // change the speed of the spinning animation depending on the speed of the ball
-  if (verticalSpeed >= -5 && verticalSpeed <= 0) {
-    frameSpeed = 12;
-  } else if (verticalSpeed >= 10) {
-    frameSpeed = 6;
+  if (verticalSpeed >= -10 && verticalSpeed <= 0) {
+    frameSpeed = 4;
+  } else if (verticalSpeed >= 20) {
+    frameSpeed = 2;
   }
 }
 
@@ -391,7 +392,7 @@ function keepingScore() {
   highScore = localStorage.getItem("theHighesScore");
 }
 
-// two(ish) minute timer for the game
+// two minute timer for the game
 function timer() {
   // how much time is left
   let minutes = Math.floor(duration / 6000);
@@ -442,11 +443,12 @@ function scoreScreen() {
 // source for setting up the three states of the game https://www.youtube.com/watch?v=3DcmPs4v2iA&t=537s
 // the three stages of the game "start", "game" and "end"
 function draw() {
+  frameRate(30);
   // re-starting the game again form the score screen
   if (screenState === "end" && keyIsDown(32)) {
     // setting the values back to original
     score = 0;
-    duration = 12000;
+    duration = 1200;
     x = Math.floor(Math.random() * 800 - 40);
     y = -250;
     verticalSpeed = 0;
