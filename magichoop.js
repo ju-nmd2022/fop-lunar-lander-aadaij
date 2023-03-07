@@ -1,4 +1,8 @@
-// Magic Hoop basketball game
+/* Magic Hoop basketball game. A basketball game where you have to controll the ball
+ with the arrow keys into the hoop. A score is kept. The goal is to always beat your high score. 
+ The star background is your fans in the audience taking pictures. 
+ Allthough this game doesn't have a "crash" it was approved to pass the Lunar Lander grading criteria
+ via an email from Evelin to Garrit during a lab. */
 
 // setting up the canvas
 function setup() {
@@ -12,8 +16,9 @@ function setup() {
 // values used through the game
 let screenState = "start";
 // duration of the timer
-let duration = 120;
+let duration = 1200;
 let score = 0;
+let highScore = 0;
 
 // starting button
 function startButton() {
@@ -69,6 +74,7 @@ function backBoard() {
   pop();
 }
 
+// drawing the rim and net
 function rimAndNet() {
   push();
   translate(-40, -90);
@@ -158,10 +164,13 @@ function starBackground() {
       flash.potitionX = flash.potitionX + Math.random() * 0.1;
     }
   }
+  // calling the backboard so that it is behing the ball
   backBoard();
 }
 
+// the four different frames of the spinning ball animation
 function firstBallPosition() {
+  // first ball frame
   // horisontal line
   line(160, 205, 240, 205);
   // right line
@@ -178,8 +187,8 @@ function firstBallPosition() {
 }
 
 function secondBallPosition() {
-  //   second ball position
-  //   right line
+  // second ball frame
+  // right line
   beginShape();
   vertex(239, 190);
   bezierVertex(239, 190, 200, 210, 215, 235);
@@ -199,7 +208,7 @@ function secondBallPosition() {
 }
 
 function thirdBallPosition() {
-  // third ball position
+  // third ball frame
   // left line
   beginShape();
   vertex(220, 165);
@@ -214,8 +223,8 @@ function thirdBallPosition() {
 }
 
 function fourthBallPosition() {
-  // fourth ball position
-  //   left line
+  // fourth ball frame
+  // left line
   beginShape();
   vertex(220, 165);
   bezierVertex(220, 165, 200, 200, 239, 210);
@@ -234,6 +243,8 @@ function fourthBallPosition() {
 
 // the animation of the ball
 let state = 0;
+// spinning speed
+let frameSpeed = 3;
 function ballRotationAnimation(ballPositionX, ballPositionY) {
   starBackground();
   push();
@@ -247,10 +258,8 @@ function ballRotationAnimation(ballPositionX, ballPositionY) {
   fill(0, 0, 0);
   ellipse(200, 200, 80);
   pop();
-  //   vertical line
+  // vertical line
   line(200, 160, 200, 240);
-
-  let frameSpeed = 10;
 
   if (state === 0) {
     // first drawing
@@ -296,11 +305,11 @@ function ballRotationAnimation(ballPositionX, ballPositionY) {
   }
   pop();
 
-  // drawing the rim and net infront of the ball
+  // calling the rim and net to be infront of the ball
   rimAndNet();
 }
 
-// https://p5js.org/examples/motion-non-orthogonal-reflection.html
+// referenses to used when figuring out the ball mecanics
 // making the ball move with the keys https://pixelkind.github.io/foundationsofprogramming/programming/12-03-example
 // gravity tutorial https://www.youtube.com/watch?v=b5AryiZ6Z-s
 
@@ -326,7 +335,7 @@ function gameMecanics() {
     verticalSpeed = verticalSpeed + 0.5;
   }
 
-  // moving left and right
+  // moving left and right with the arrow keys
   x = x + horisontalSpeed;
   if (keyIsDown(37)) {
     horisontalSpeed = -1.5;
@@ -336,12 +345,10 @@ function gameMecanics() {
     x = x + horisontalSpeed;
   }
 
-  // ractangles to see where the corinates of the rims borders are
+  // ractangles to see where the cordinates of the rims borders are
   // rect(345, 465, 10);
   // rect(455, 465, 10);
 
-  // if the balls x and y position of the ball - or + the balls radius 40px
-  // come closer to these squeres stop the vertical speed, maybe jump?
   // right rim bounce
   if (x < 335 && x > 290 && y > 385 && y < 400) {
     verticalSpeed = -10;
@@ -360,27 +367,31 @@ function gameMecanics() {
     horisontalSpeed = 0;
     screenState = "game";
   }
-  // the ball has to pass between the x values 390 and 500 of the rim at the y height of 560
-  // if the ball hits 390 or 500 it has to (bounce off) or (stop the ball)
-  // x > 0 && x < 500
+
+  // adding to the score when ever the ball passes the rim and dropping the ball straight down after that.
   if (y > 405 && y < 420 && x > 290 && x < 465) {
     score += 1;
+    verticalSpeed = 25;
+    horisontalSpeed = 0;
+  }
+  // change the speed of the spinning animation depending on the speed of the ball
+  if (verticalSpeed >= -10 && verticalSpeed <= 0) {
+    frameSpeed = 4;
+  } else if (verticalSpeed >= 20) {
+    frameSpeed = 2;
   }
 }
-let highScore = 0;
-// how many times has the ball passed the hoop
+
+// storing the highest score
+// source for how to use local storage https://www.javatpoint.com/javascript-localstorage
 function keepingScore() {
-  // high score
   if (score >= highScore) {
     localStorage.setItem("theHighesScore", score);
   }
   highScore = localStorage.getItem("theHighesScore");
 }
 
-// calculating the high score
-// https://www.javatpoint.com/javascript-localstorage
-
-// two minute timer for the game
+// two(ish) minute timer for the game
 function timer() {
   // how much time is left
   let minutes = Math.floor(duration / 600);
@@ -403,11 +414,11 @@ function timer() {
     screenState = "end";
   }
 
-  // displaying the score
+  // displaying the score when playing
   text(score, 40, 40);
 }
 
-// ending screen to show the score and re-start the game
+// ending screen to show the score, hiht score and re-start the game
 function scoreScreen() {
   background(255, 255, 255);
   push();
@@ -420,6 +431,7 @@ function scoreScreen() {
   text("SCORE", 250, 185);
   text(score, 540, 185);
   startButton();
+  // concratulating a new high score
   if (score >= highScore) {
     textSize(20);
     text("NEW HIGH SCORE!", 340, 135);
@@ -428,13 +440,13 @@ function scoreScreen() {
 }
 
 // source for setting up the three states of the game https://www.youtube.com/watch?v=3DcmPs4v2iA&t=537s
-// draw function
+// the three stages of the game "start", "game" and "end"
 function draw() {
   // re-starting the game again form the score screen
   if (screenState === "end" && keyIsDown(32)) {
     // setting the values back to original
     score = 0;
-    duration = 120;
+    duration = 1200;
     x = Math.floor(Math.random() * 800 - 40);
     y = -250;
     verticalSpeed = 0;
