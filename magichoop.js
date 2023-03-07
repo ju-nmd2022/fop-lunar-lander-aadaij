@@ -17,7 +17,7 @@ function setup() {
 // values used through the game
 let screenState = "start";
 // duration of the timer
-let duration = 12000;
+let duration = 1200;
 let score = 0;
 let highScore = 0;
 
@@ -395,10 +395,10 @@ function keepingScore() {
 // two minute timer for the game
 function timer() {
   // how much time is left
-  let minutes = Math.floor(duration / 6000);
-  let seconds = duration % 6000;
+  let minutes = Math.floor(duration / 600);
+  let seconds = duration % 600;
   // only showin two numbers for seconds
-  seconds = seconds / 100;
+  seconds = seconds / 10;
   // getting rid of desimals
   seconds = seconds.toFixed(0);
 
